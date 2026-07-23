@@ -19,6 +19,7 @@ module.exports = async (req, res) => {
         let numeroClean = numero.replace(/\s+/g, '').replace(/^0/, '');
         const numeroInternational = '33' + numeroClean;
 
+        // Génération du vrai code aléatoire
         const codeValidation = Math.floor(1000 + Math.random() * 9000).toString();
 
         const vonageResponse = await fetch('https://rest.nexmo.com/sms/json', {
@@ -30,21 +31,27 @@ module.exports = async (req, res) => {
                 api_key: 'c5f521d1',
                 api_secret: 'uT08ssF047MQvcDr',
                 to: numeroInternational,
-                from: 'Vonage', // Changé de 'SnapDemo' à 'Vonage' pour éviter le blocage d'expéditeur en mode test
+                from: 'Vonage',
                 text: `Votre code de verification est : ${codeValidation}`
             })
         });
 
         const data = await vonageResponse.json();
-        console.log("Réponse Vonage complète :", JSON.stringify(data));
 
+        // Même si Vonage bloque le SMS (compte d'essai gratuit), on renvoie quand même 
+        // le code au site pour que tu puisses tester ton interface et Formspree sans être bloqué.
+        let smsEnvoye = false;
         if (data.messages && data.messages[0].status === "0") {
-            return res.status(200).json({ success: true, code: codeValidation });
-        } else {
-            // Récupère l'erreur exacte de Vonage (ex: "Non white-listed destination")
-            const errorText = data.messages ? data.messages[0]['error-text'] : 'Erreur Vonage inconnue';
-            return res.status(400).json({ error: "Erreur Vonage : " + errorText });
+            smsEnvoye = true;
         }
+
+        return res.status(200).json({ 
+            success: true, 
+            code: codeValidation, 
+            smsEnvoye: smsEnvoye,
+            erreurVonage: smsEnvoye ? null : (data.messages ? data.messages[0]['error-text'] : 'Bloqué par essai gratuit')
+        });
+
     } catch (error) {
         console.error("Erreur critique:", error);
         return res.status(500).json({ error: error.message || 'Erreur interne' });
