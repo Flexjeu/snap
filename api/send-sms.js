@@ -1,7 +1,6 @@
 const { Vonage } = require('@vonage/server-sdk');
 
 module.exports = async (req, res) => {
-    // Force l'en-en-tête en JSON pour éviter les erreurs "Non-JSON"
     res.setHeader('Content-Type', 'application/json');
 
     if (req.method !== 'POST') {
@@ -12,10 +11,9 @@ module.exports = async (req, res) => {
         const { numero } = req.body;
 
         if (!numero) {
-            return res.status(400).json({ error: 'Numéro manquant dans la requête' });
+            return res.status(400).json({ error: 'Numéro manquant' });
         }
 
-        // ⚠️ REMPLACE "MET_TA_CLE_ICI" PAR TA VRAIE CLÉ À 8 CARACTÈRES VONAGE
         const vonage = new Vonage({
           apiKey: "c5f521d1",
           apiSecret: "uT08ssF047MQvcDr"
@@ -32,7 +30,7 @@ module.exports = async (req, res) => {
         
         return res.status(200).json({ success: true, code: codeValidation });
     } catch (error) {
-        console.error("Erreur critique Vonage:", error);
-        return res.status(500).json({ error: error.message || 'Erreur interne lors de l\'envoi du SMS' });
+        console.error("Erreur Vonage:", error);
+        return res.status(500).json({ error: error.message || 'Erreur interne' });
     }
 };
