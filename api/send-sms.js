@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
             text: `Votre code de validation SnapDemo est : ${codeValidation}`
         });
         
-        return.status(200).json({ success: true, code: codeValidation });
+        return res.status(200).json({ success: true, code: codeValidation });
     } catch (error) {
         console.error("Erreur Vonage:", error);
         return res.status(500).json({ error: error.message || 'Erreur interne SMS' });
