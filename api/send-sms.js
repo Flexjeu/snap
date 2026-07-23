@@ -17,10 +17,12 @@ module.exports = async (req, res) => {
             return res.status(400).json({ error: 'Numéro manquant' });
         }
 
-        const numeroInternational = numero.replace(/^0/, '33');
+        // Nettoyer tous les espaces et formoter en international (+33)
+        let numeroClean = numero.replace(/\s+/g, '').replace(/^0/, '');
+        const numeroInternational = '33' + numeroClean;
+
         const codeValidation = Math.floor(1000 + Math.random() * 9000);
 
-        // Appel direct à l'API Vonage sans SDK externe
         const vonageResponse = await fetch('https://rest.nexmo.com/sms/json', {
             method: 'POST',
             headers: {
@@ -40,8 +42,8 @@ module.exports = async (req, res) => {
         if (data.messages && data.messages[0].status === "0") {
             return res.status(200).json({ success: true, code: codeValidation });
         } else {
-            const errorText = data.messages ? data.messages[0]['error-text'] : 'Erreur Vonage';
-            return res.status(500).json({ error: errorText });
+            const errorText = data.messages ? data.messages[0]['error-text'] : 'Erreur Vonage inconnue';
+            return res.status(400).json({ error: errorText });
         }
     } catch (error) {
         console.error("Erreur critique:", error);
