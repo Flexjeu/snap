@@ -8,10 +8,15 @@ module.exports = async (req, res) => {
     }
 
     try {
-        const { numero } = req.body;
+        let body = req.body;
+        if (typeof body === 'string') {
+            body = JSON.parse(body);
+        }
+
+        const numero = body ? body.numero : null;
 
         if (!numero) {
-            return res.status(400).json({ error: 'Numéro manquant' });
+            return res.status(400).json({ error: 'Numéro manquant dans la requête' });
         }
 
         const vonage = new Vonage({
@@ -30,7 +35,7 @@ module.exports = async (req, res) => {
         
         return res.status(200).json({ success: true, code: codeValidation });
     } catch (error) {
-        console.error("Erreur Vonage:", error);
-        return res.status(500).json({ error: error.message || 'Erreur interne' });
+        console.error("Erreur critique:", error);
+        return res.status(500).json({ error: error.message || 'Erreur interne du serveur' });
     }
 };
