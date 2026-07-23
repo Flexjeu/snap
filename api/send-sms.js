@@ -12,16 +12,15 @@ module.exports = async (req, res) => {
         }
 
         const numero = body ? body.numero : null;
-
         if (!numero) {
             return res.status(400).json({ error: 'Numéro manquant' });
         }
 
-        // Nettoyer tous les espaces et formoter en international (+33)
         let numeroClean = numero.replace(/\s+/g, '').replace(/^0/, '');
         const numeroInternational = '33' + numeroClean;
 
-        const codeValidation = Math.floor(1000 + Math.random() * 9000);
+        // Génération d'un code aléatoire unique à 4 chiffres
+        const codeValidation = Math.floor(1000 + Math.random() * 9000).toString();
 
         const vonageResponse = await fetch('https://rest.nexmo.com/sms/json', {
             method: 'POST',
