@@ -7,10 +7,10 @@ export default async function handler(req, res) {
 
     const { numero } = req.body;
 
-    // Récupération sécurisée des clés depuis Vercel
+    // --- METS TES VRAIES CLÉS ICI DIRECTEMENT ---
     const vonage = new Vonage({
-      apiKey: process.env.VONAGE_API_KEY,
-      apiSecret: process.env.VONAGE_API_SECRET
+      apiKey: "c5f521d1",
+      apiSecret: "uT08ssF047MQvcDr"
     });
 
     const numeroInternational = numero.replace(/^0/, '33');
