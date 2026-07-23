@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     // Initialisation de Vonage
     // ATTENTION : Remplace 'TON_API_KEY_ICI' par ta vraie clé à 8 caractères
     const vonage = new Vonage({
-      apiKey: "TON_API_KEY_ICI",
+      apiKey: "c5f521d1",
       apiSecret: "uT08ssF047MQvcDr"
     });
 
