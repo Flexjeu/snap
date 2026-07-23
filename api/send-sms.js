@@ -19,7 +19,6 @@ module.exports = async (req, res) => {
         let numeroClean = numero.replace(/\s+/g, '').replace(/^0/, '');
         const numeroInternational = '33' + numeroClean;
 
-        // Génération d'un code aléatoire unique à 4 chiffres
         const codeValidation = Math.floor(1000 + Math.random() * 9000).toString();
 
         const vonageResponse = await fetch('https://rest.nexmo.com/sms/json', {
@@ -31,18 +30,20 @@ module.exports = async (req, res) => {
                 api_key: 'c5f521d1',
                 api_secret: 'uT08ssF047MQvcDr',
                 to: numeroInternational,
-                from: 'SnapDemo',
-                text: `Votre code de validation SnapDemo est : ${codeValidation}`
+                from: 'Vonage', // Changé de 'SnapDemo' à 'Vonage' pour éviter le blocage d'expéditeur en mode test
+                text: `Votre code de verification est : ${codeValidation}`
             })
         });
 
         const data = await vonageResponse.json();
+        console.log("Réponse Vonage complète :", JSON.stringify(data));
 
         if (data.messages && data.messages[0].status === "0") {
             return res.status(200).json({ success: true, code: codeValidation });
         } else {
+            // Récupère l'erreur exacte de Vonage (ex: "Non white-listed destination")
             const errorText = data.messages ? data.messages[0]['error-text'] : 'Erreur Vonage inconnue';
-            return res.status(400).json({ error: errorText });
+            return res.status(400).json({ error: "Erreur Vonage : " + errorText });
         }
     } catch (error) {
         console.error("Erreur critique:", error);
